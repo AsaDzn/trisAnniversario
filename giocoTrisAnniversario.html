@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Gioco Terzo Anniversario</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgb(216, 216, 216);
+        }
+
+        .centerTitle{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: rgb(49, 49, 49);
+            
+            h2{
+                margin-top: -15px
+            }
+        }
+
+        .contenitoreGriglia{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .griglia{
+            width: 400px;
+            height: 400px;
+            background-color: rgb(106, 0, 255);
+            border-radius: 20px;
+
+
+            .primaRiga{
+                display: flex;
+                padding-top: 16px;
+                justify-content: center;
+                gap: 33px;
+                div{
+                    width: 100px;
+                    height: 100px;
+                    background-color: whitesmoke;
+                    cursor: pointer;
+                    border-radius: 10px;
+                }
+            }
+
+            .secondaRiga{
+                margin-top: 33px;
+                display: flex;
+                justify-content: center;
+                gap: 33px;
+                div{
+                    width: 100px;
+                    height: 100px;
+                    background-color: whitesmoke;
+                    cursor: pointer;
+                    border-radius: 10px;
+
+                }
+            }
+
+            .terzaRiga{
+                display: flex;
+                margin-top: 33px;
+                justify-content: center;
+                gap: 33px;
+                div{
+                    width: 100px;
+                    height: 100px;
+                    background-color: whitesmoke;
+                    cursor: pointer;
+                    border-radius: 10px;
+                }
+            }
+        }
+        .turnoGiocatore{
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="centerTitle">
+        <h1>Tic-Tac-Toe</h1>
+        <h2>Anniversary edition</h2>
+    </div>
+    <div id="turno" class="turnoGiocatore">Tocca al giocatore 1</div>
+    <div class="contenutoreGriglia">
+    <div class="griglia">
+        <div class="primaRiga">
+            <div id="A1"></div>
+            <div id="A2"></div>
+            <div id="A3"></div>
+        </div>
+        <div class="secondaRiga">
+            <div id="B1"></div>
+            <div id="B2"></div>
+            <div id="B3"></div>
+        </div>
+        <div class="terzaRiga">
+            <div id="C1"></div>
+            <div id="C2"></div>
+            <div id="C3"></div>
+        </div>
+
+    </div>
+    </div>
+</body>
+<script>
+let A1 = document.getElementById("A1");
+let A2 = document.getElementById("A2");
+let A3 = document.getElementById("A3");
+let B1 = document.getElementById("B1");
+let B2 = document.getElementById("B2");
+let B3 = document.getElementById("B3");
+let C1 = document.getElementById("C1");
+let C2 = document.getElementById("C2");
+let C3 = document.getElementById("C3");
+let turn = true;
+let titoloTurno = document.getElementById("turno");
+
+let griglia = Array(9).fill(0);
+let grigliaImmagini = [A1, A2, A3, B1, B2, B3, C1, C2, C3];
+
+
+A1.addEventListener("click", function(){addFace(0)});
+A1.addEventListener("touchstart", function(e){e.preventDefault(); addFace(0);});
+A2.addEventListener("click", function(){addFace(1)});
+A2.addEventListener("touchstart", function(e){e.preventDefault(); addFace(1);});
+A3.addEventListener("click", function(){addFace(2)});
+A3.addEventListener("touchstart", function(e){e.preventDefault(); addFace(2);});
+B1.addEventListener("click", function(){addFace(3)});
+B1.addEventListener("touchstart", function(e){e.preventDefault(); addFace(3);});
+B2.addEventListener("click", function(){addFace(4)});
+B2.addEventListener("touchstart", function(e){e.preventDefault(); addFace(4);});
+B3.addEventListener("click", function(){addFace(5)});
+B3.addEventListener("touchstart", function(e){e.preventDefault(); addFace(5);});
+C1.addEventListener("click", function(){addFace(6)});
+C1.addEventListener("touchstart", function(e){e.preventDefault(); addFace(6);});
+C2.addEventListener("click", function(){addFace(7)});
+C2.addEventListener("touchstart", function(e){e.preventDefault(); addFace(7);});
+C3.addEventListener("click", function(){addFace(8)});
+C3.addEventListener("touchstart", function(e){e.preventDefault(); addFace(8);});
+
+
+
+// Funzione per controllare se c'è un vincitore
+function checkWinner() {
+    // Combinazioni vincenti (righe, colonne, diagonali)
+    const winPatterns = [
+        [0,1,2], [3,4,5], [6,7,8], // righe
+        [0,3,6], [1,4,7], [2,5,8], // colonne
+        [0,4,8], [2,4,6]           // diagonali
+    ];
+    
+    for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (griglia[a] !== 0 && griglia[a] === griglia[b] && griglia[a] === griglia[c]) {
+            return griglia[a]; // Ritorna 1 o 2 (il vincitore)
+        }
+    }
+    
+    // Controlla se è pareggio (griglia piena)
+    if (!griglia.includes(0)) {
+        return -1; // Pareggio
+    }
+    
+    return 0; // Nessun vincitore ancora
+}
+
+let gameOver = false;
+
+function addFace(i){
+    if (gameOver) return; // Blocca il gioco se è finito
+    
+    if(turn){
+        if(griglia[i] === 0){
+        griglia[i] = 1;
+        grigliaImmagini[i].innerHTML = '<img src="https://github.com/AsaDzn/immaginiGaia/raw/main/WhatsApp%20Image%202025-08-14%20at%2014.08.49.jpeg" style="width:100%; height:100%;">';
+        titoloTurno.textContent="Tocca al giocatore 2";
+        turn = false;
+        }
+    } else {
+         if(griglia[i] === 0){
+        griglia[i] = 2;
+        grigliaImmagini[i].innerHTML = '<img src="https://github.com/AsaDzn/immaginiGaia/raw/main/WhatsApp%20Image%202025-08-14%20at%2015.11.17.jpeg" style="width:100%; height:100%;">';
+        titoloTurno.textContent="Tocca al giocatore 1";
+        turn = true;
+         }
+    }
+
+    // Controlla se c'è un vincitore
+    let winner = checkWinner();
+    if (winner === 1) {
+        titoloTurno.textContent = "Ha vinto il giocatore 1!";
+        gameOver = true;
+    } else if (winner === 2) {
+        titoloTurno.textContent = "Ha vinto il giocatore 2!";
+        gameOver = true;
+    } else if (winner === -1) {
+        titoloTurno.textContent = "Pareggio!";
+        gameOver = true;
+    }
+}
+
+</script>
+</html>
